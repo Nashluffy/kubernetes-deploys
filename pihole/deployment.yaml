@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole-app
+  labels:
+    app: pihole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pihole
+  template:
+    metadata:
+      labels:
+        name: pihole
+    spec:
+      containers:
+      - name: pihole
+        image: pihole/pihole:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 53
+          name: dns
+          protocol: TCP
+        - containerPort: 53
+          name: dns-udp
+          protocol: UDP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 67
+          name: client-udp
+          protocol: UDP
+        env:
+        - name: TZ
+          value: "America/New_York"
+        - name: WEBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: web-password
+              key: password
+        volumeMounts:
+        - name: pihole-local-etc-volume
+          mountPath: "/etc/pihole"
+        - name: pihole-local-dnsmasq-volume
+          mountPath: "/etc/dnsmasq.d"
+      volumes:
+      - name: pihole-local-etc-volume
+        persistentVolumeClaim:
+          claimName: pihole-local-etc-claim
+      - name: pihole-local-dnsmasq-volume
+        persistentVolumeClaim:
+          claimName: pihole-local-dnsmasq-claim
