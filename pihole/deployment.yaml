@@ -1,27 +1,48 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pihole-app
   labels:
     app: pihole
+  name: pihole
+  namespace: pihole
 spec:
-  replicas: 1
+  progressDeadlineSeconds: 600
+  replicas: 3
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      name: pihole
+      app: pihole
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        name: pihole
+        app: pihole
     spec:
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+        - 127.0.0.1
+        - 8.8.8.8
       containers:
-      - name: pihole
-        image: pihole/pihole:latest
-        imagePullPolicy: Always
+      - env:
+        - name: ServerIP
+          value: 192.168.4.50
+        - name: WEBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: web-password
+        image: pihole/pihole:4.1_amd64
+        imagePullPolicy: IfNotPresent
+        name: pihole
         ports:
         - containerPort: 80
-          name: http
+          name: pihole-http
           protocol: TCP
         - containerPort: 53
           name: dns
@@ -30,28 +51,26 @@ spec:
           name: dns-udp
           protocol: UDP
         - containerPort: 443
-          name: https
+          name: pihole-ssl
           protocol: TCP
         - containerPort: 67
           name: client-udp
           protocol: UDP
-        env:
-        - name: TZ
-          value: "America/New_York"
-        - name: WEBPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: web-password
-              key: password
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
         volumeMounts:
-        - name: pihole-local-etc-volume
-          mountPath: "/etc/pihole"
-        - name: pihole-local-dnsmasq-volume
-          mountPath: "/etc/dnsmasq.d"
+        - mountPath: /etc/pihole
+          name: config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
       volumes:
-      - name: pihole-local-etc-volume
+      - name: config
         persistentVolumeClaim:
           claimName: pihole-local-etc-claim
-      - name: pihole-local-dnsmasq-volume
-        persistentVolumeClaim:
-          claimName: pihole-local-dnsmasq-claim
+status: {}
+
+
