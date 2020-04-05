@@ -5,12 +5,9 @@ metadata:
   name: pihole-local-etc-claim
   namespace: pihole
 spec:
-  storageClassName: local
+  storageClassName: longhorn
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  selector:
-    matchLabels:
-      directory: etc
