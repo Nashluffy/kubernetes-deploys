@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations:
     metallb.universe.tf/allow-shared-ip: pihole
-    metallb.universe.tf/address-pool: default
+    metallb.universe.tf/address-pool: private
   labels:
     app: pihole
   name: pihole-tcp
@@ -33,7 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    metallb.universe.tf/address-pool: default
+    metallb.universe.tf/address-pool: private
     metallb.universe.tf/allow-shared-ip: pihole
   labels:
     app: pihole

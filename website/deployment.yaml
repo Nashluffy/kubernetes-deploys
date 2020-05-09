@@ -6,7 +6,7 @@ metadata:
   labels:
     name: flask
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       name: flask
@@ -20,7 +20,9 @@ spec:
         - name: flask
           image: nashluffy/flask
           ports:
-            - containerPort: 8080
+          - name: https
+            containerPort: 8080
+            hostPort: 443
           resources:
             requests:
               memory: 256Mi

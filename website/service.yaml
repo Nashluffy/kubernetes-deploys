@@ -11,10 +11,9 @@ spec:
   externalTrafficPolicy: Local
   loadBalancerIP: 107.15.131.56
   ports:
-  - name: website-http
+  - protocol: TCP
+    name: website-http
     port: 80
-    protocol: TCP
-    targetPort: 8080
   selector:
     name: flask
   sessionAffinity: None
