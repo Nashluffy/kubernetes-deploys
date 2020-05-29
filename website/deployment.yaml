@@ -4,17 +4,17 @@ metadata:
   name: flask
   namespace: website
   labels:
-    name: flask
+    app: flask
 spec:
   replicas: 3
   selector:
     matchLabels:
-      name: flask
+      app: flask
   template:
     metadata:
       name: flask
       labels:
-        name: flask
+        app: flask
     spec:
       containers:
         - name: flask
@@ -22,7 +22,6 @@ spec:
           ports:
           - name: https
             containerPort: 8080
-            hostPort: 443
           resources:
             requests:
               memory: 256Mi

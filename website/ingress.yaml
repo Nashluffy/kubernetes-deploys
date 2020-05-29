@@ -1,18 +1,22 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: flask-ingress
+  name: website-ingress
   namespace: website
-  annotations: 
-    traefik.frontend.entryPoints: / 
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
 spec:
   tls:
-   - secretName: traefik-ui-tls-cert
+  - hosts:
+    - nashluffman.com
+    - www.nashluffman.com
+    secretName: website-tls
   rules:
   - host: nashluffman.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: flask
+          serviceName: flask-service
           servicePort: 80

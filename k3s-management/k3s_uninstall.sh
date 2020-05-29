@@ -37,9 +37,9 @@ declare -a workerCommands
 instantiateWorkerCommands(){
     unset workerCommands
     workerCommands+=('echo "#########################################"')
-    workerCommands+=('echo "Starting to install worker agents"')
+    workerCommands+=('echo "Starting to uninstall worker agents"')
     workerCommands+=('echo "#########################################"')
-    workerCommands+=('echo "Installing worker node with name "'$1)
+    workerCommands+=('echo "Deleting worker node with name "'$1)
     workerCommands+=('/usr/local/bin/k3s-agent-uninstall.sh')
 }
 
