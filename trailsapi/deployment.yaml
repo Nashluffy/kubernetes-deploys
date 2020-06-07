@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask
-  namespace: website
+  name: trails
+  namespace: trails
   labels:
-    app: flask
+    app: trails
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: flask
+      app: trails
   template:
     metadata:
-      name: flask
+      name: trails
       labels:
-        app: flask
+        app: trails
     spec:
       containers:
-        - name: flask
-          image: nashluffy/flask:latest
+        - name: trails
+          image: nashluffy/trailsapi:latest
           ports:
-          - name: https
+          - name: http
             containerPort: 8080
           resources:
             requests:

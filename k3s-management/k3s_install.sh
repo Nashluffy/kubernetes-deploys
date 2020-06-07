@@ -42,7 +42,7 @@ instantiateMasterCommands(){
     masterCommands+=('echo "Starting to install master servers"')
     masterCommands+=('echo -e "#########################################\n\n"')
     masterCommands+=('echo "Installing master server with name "'$1)
-    masterCommands+=('sudo curl -sfL https://get.k3s.io | sh -s - --no-deploy servicelb --no-deploy traefik --write-kubeconfig-mode 644 --node-name '"${1}")
+    masterCommands+=('sudo curl -sfL https://get.k3s.io | sh -s - --no-deploy servicelb --write-kubeconfig-mode 644 --node-name '"${1}")
 }
 
 #####################################################
@@ -126,9 +126,12 @@ kubectl create namespace pihole
 kubectl create namespace metallb-system
 kubectl create namespace website
 kubectl create namespace kubernetes-dashboard
+kubectl create namespace trails
 kubectl create secret generic web-password --from-literal=password=$PIHOLE_PASS -n pihole
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+kubectl create secret generic prod-route53-credentials-secret --from-literal=secret-access-key=${secretAccessKey} -n cert-manager
 kubectl apply -f ~/Code/kubernetes-deploys/ --recursive
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.yaml
 
 #We force pihole to run on hardwired-bm node in my office 
 nodeString=$(kubectl get nodes --no-headers | grep -v bm.uno |awk '{print $1}')
@@ -140,3 +143,5 @@ readarray -t pods <<<"$podString"
 for node in ${nodes[@]}; do kubectl cordon $node; done
 for pod in ${pods[@]}; do kubectl delete pod ${pod} -n pihole; done
 for node in ${nodes[@]}; do kubectl uncordon $node; done
+
+echo 'Install is complete. Do NOT forget to port forward the NodeIP on ingress service'

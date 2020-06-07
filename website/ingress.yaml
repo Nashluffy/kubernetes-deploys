@@ -20,3 +20,11 @@ spec:
         backend:
           serviceName: flask-service
           servicePort: 80
+  - host: www.nashluffman.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: flask-service
+          servicePort: 80
+

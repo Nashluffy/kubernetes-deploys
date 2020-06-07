@@ -16,7 +16,7 @@ spec:
       dns01:
         route53:
           region: us-east1
-          accessKeyID: AKIASWGYKCGC36VJYTU6
+          accessKeyID: AKIASWGYKCGCQS2CVW72
           secretAccessKeySecretRef:
             name: prod-route53-credentials-secret
             key: secret-access-key
