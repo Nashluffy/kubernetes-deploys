@@ -282,6 +282,11 @@ spec:
         app: metallb
         component: speaker
     spec:
+      tolerations:
+      - key: kubernetes.io/arch
+        operator: "Equal"
+        value: arm
+        effect: "NoSchedule"
       containers:
       - args:
         - --port=7472
@@ -362,6 +367,11 @@ spec:
         app: metallb
         component: controller
     spec:
+      tolerations:
+      - key: kubernetes.io/arch
+        operator: "Equal"
+        value: arm
+        effect: "NoSchedule"
       containers:
       - args:
         - --port=7472

@@ -16,17 +16,17 @@ spec:
       labels:
         app: trails
     spec:
+      tolerations:
+      - key: kubernetes.io/arch
+        operator: "Equal"
+        value: arm
+        effect: "NoSchedule"
       containers:
         - name: trails
           image: nashluffy/trailsapi:latest
           ports:
           - name: http
             containerPort: 8080
-          resources:
-            requests:
-              memory: 256Mi
-            limits:
-              memory: 512Mi
           env:
             - name: DEBUG_MODE
               value: "1"
