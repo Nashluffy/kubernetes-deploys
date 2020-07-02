@@ -1,4 +1,0 @@
-search website.svc.cluster.local svc.cluster.local cluster.local
-nameserver 10.43.0.10
-options ndots:5
-

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox
+  namespace: default
+  labels:
+    app: busybox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      name: busybox
+      labels:
+        app: busybox
+    spec:
+      tolerations:
+      - key: kubernetes.io/arch
+        operator: "Equal"
+        value: arm
+        effect: "NoSchedule"
+      containers:
+      - args:
+        - sh
+        image: busybox
+        imagePullPolicy: Always
+        name: busybox

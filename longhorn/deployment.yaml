@@ -220,7 +220,7 @@ data:
     guaranteed-engine-cpu:
     default-longhorn-static-storage-class:
     backupstore-poll-interval:
-    taint-toleration:
+    taint-toleration: 
 ---
 apiVersion: apps/v1
 kind: DaemonSet
