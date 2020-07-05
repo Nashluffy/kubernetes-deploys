@@ -129,20 +129,14 @@ kubectl create namespace kubernetes-dashboard
 kubectl create namespace trails
 kubectl create secret generic web-password --from-literal=password=$PIHOLE_PASS -n pihole
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
-kubectl create secret generic prod-route53-credentials-secret --from-literal=secret-access-key=${secretAccessKey}
-kubectl apply -f ~/Code/kubernetes-deploys/ --recursive
+kubectl create secret generic prod-route53-credentials-secret --from-literal=secret-access-key=${secretAccessKey} -n cert-manager
+kubectl taint nodes pi.uno kubernetes.io/arch=arm:NoSchedule
+kubectl taint nodes pi.dos kubernetes.io/arch=arm:NoSchedule
+
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.yaml
+sleep 30
+kubectl apply -f ~/Code/kubernetes-deploys/ --recursive
 
-#We force pihole to run on hardwired-bm node in my office 
-nodeString=$(kubectl get nodes --no-headers | grep -v bm.uno |awk '{print $1}')
-readarray -t nodes <<<"$nodeString"
-
-podString=$(kubectl get pods -n pihole --no-headers| awk '{print $1}')
-readarray -t pods <<<"$podString"
-
-for node in ${nodes[@]}; do kubectl cordon $node; done
-for pod in ${pods[@]}; do kubectl delete pod ${pod} -n pihole; done
-for node in ${nodes[@]}; do kubectl uncordon $node; done
 
 echo 'Install is complete. Do NOT forget to port forward the NodeIP on ingress service'
 

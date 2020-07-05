@@ -16,6 +16,20 @@ spec:
       labels:
         app: flask
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm
+      tolerations:
+      - key: kubernetes.io/arch
+        operator: "Equal"
+        value: arm
+        effect: "NoSchedule"
       containers:
         - name: flask
           image: nashluffy/flask:latest

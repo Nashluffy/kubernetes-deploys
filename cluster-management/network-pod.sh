@@ -1,0 +1,1 @@
+kubectl run network-pod --rm -i --tty --overrides='{"spec": {"tolerations": [{"key":"kubernetes.io/arch", "operator": "Equal", "value":"arm", "effect":"NoSchedule"}]}}' --image nashluffy/netshoot -- sh
