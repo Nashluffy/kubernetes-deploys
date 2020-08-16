@@ -36,6 +36,7 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
 data:
+  enable-vts-status: "true"
 ---
 # Source: ingress-nginx/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -310,6 +311,9 @@ metadata:
     app.kubernetes.io/version: 0.32.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
@@ -391,6 +395,9 @@ spec:
               protocol: TCP
             - name: webhook
               containerPort: 8443
+              protocol: TCP
+            - name: prometheus
+              containerPort: 10254
               protocol: TCP
           volumeMounts:
             - name: webhook-cert
